@@ -5,29 +5,52 @@
 <title>XML Badges Viewer</title>
 <script type="text/javascript">
 function loadXML() {
-var xmlURL = "https://zbh-123456.github.io/xml-badges/badges.xml";
-var xslURL = "https://zbh-123456.github.io/xml-badges/style.xsl";
-  // =====================================================
+    // 用 GitHub Pages 地址
+    var xmlURL = "https://zbh-123456.github.io/xml-badges/badges.xml";
+    var xslURL = "https://zbh-123456.github.io/xml-badges/style.xsl";
 
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", xmlURL, false);
-  xmlhttp.send();
-  var xmlDoc = xmlhttp.responseXML;
+    var resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "<p>正在加载数据...</p>";
 
-  var xslhttp = new XMLHttpRequest();
-  xslhttp.open("GET", xslURL, false);
-  xslhttp.send();
-  var xslDoc = xslhttp.responseXML;
+    try {
+        // 加载 XML
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", xmlURL, false);
+        xmlhttp.send();
+        var xmlDoc = xmlhttp.responseXML;
 
-  if (window.XSLTProcessor) {
-    var xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(xslDoc);
-    var result = xsltProcessor.transformToFragment(xmlDoc, document);
-    document.getElementById("result").appendChild(result);
-  } else if (window.ActiveXObject || xhttp.responseType == "msxml-document") {
-    var ex = xmlDoc.transformNode(xslDoc);
-    document.getElementById("result").innerHTML = ex;
-  }
+        if (!xmlDoc || xmlDoc.getElementsByTagName("parsererror").length > 0) {
+            resultDiv.innerHTML = "<p style='color:red;'>错误：无法加载 XML 文件，请检查地址。</p>";
+            return;
+        }
+
+        // 加载 XSLT
+        var xslhttp = new XMLHttpRequest();
+        xslhttp.open("GET", xslURL, false);
+        xslhttp.send();
+        var xslDoc = xslhttp.responseXML;
+
+        if (!xslDoc || xslDoc.getElementsByTagName("parsererror").length > 0) {
+            resultDiv.innerHTML = "<p style='color:red;'>错误：无法加载 XSLT 文件，请检查地址。</p>";
+            return;
+        }
+
+        // 转换并显示
+        if (window.XSLTProcessor) {
+            var xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet(xslDoc);
+            var result = xsltProcessor.transformToFragment(xmlDoc, document);
+            resultDiv.innerHTML = "";
+            resultDiv.appendChild(result);
+        } else if (window.ActiveXObject) {
+            var ex = xmlDoc.transformNode(xslDoc);
+            resultDiv.innerHTML = ex;
+        } else {
+            resultDiv.innerHTML = "<p style='color:red;'>错误：你的浏览器不支持 XSLT 转换。</p>";
+        }
+    } catch (err) {
+        resultDiv.innerHTML = "<p style='color:red;'>错误：" + err.message + "</p>";
+    }
 }
 window.onload = loadXML;
 </script>
