@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE badges SYSTEM "badges.dtd">
+<badges>
+  <badge type="activity">
+    <name>Artist</name>
+    <description>For creative skills in art and design</description>
+    <levels>
+      <availability level="beaver">Available</availability>
+      <availability level="cub">Available</availability>
+      <availability level="scout">Not Available</availability>
+    </levels>
+  </badge>
+  <badge type="activity">
+    <name>Swimmer</name>
+    <description>For swimming ability and water safety</description>
+    <levels>
+      <availability level="beaver">Available</availability>
+      <availability level="cub">Available</availability>
+      <availability level="scout">Available</availability>
+    </levels>
+  </badge>
+</badges>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8"/>
+<title>XML Badges Viewer</title>
+<script type="text/javascript">
+function loadXML() {
+  // ========== 这两个地址会在下一步替换成你自己的 ==========
+  var xmlURL = "https://你的用户名.github.io/仓库名/badges.xml";
+  var xslURL = "https://你的用户名.github.io/仓库名/style.xsl";
+  // =====================================================
+
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", xmlURL, false);
+  xmlhttp.send();
+  var xmlDoc = xmlhttp.responseXML;
+
+  var xslhttp = new XMLHttpRequest();
+  xslhttp.open("GET", xslURL, false);
+  xslhttp.send();
+  var xslDoc = xslhttp.responseXML;
+
+  if (window.XSLTProcessor) {
+    var xsltProcessor = new XSLTProcessor();
+    xsltProcessor.importStylesheet(xslDoc);
+    var result = xsltProcessor.transformToFragment(xmlDoc, document);
+    document.getElementById("result").appendChild(result);
+  } else if (window.ActiveXObject || xhttp.responseType == "msxml-document") {
+    var ex = xmlDoc.transformNode(xslDoc);
+    document.getElementById("result").innerHTML = ex;
+  }
+}
+window.onload = loadXML;
+</script>
+</head>
+<body>
+<div id="result"></div>
+</body>
+</html>
